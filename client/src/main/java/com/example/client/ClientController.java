@@ -21,6 +21,6 @@ public class ClientController {
 		ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://localhost:8443/server", reqeust, String.class);
 		
 		
-		return "Server working and status("+String.valueOf(responseEntity.getStatusCode())+")";
+		return "Server working and status ("+String.valueOf(responseEntity.getStatusCode())+")";
 	}
 }
