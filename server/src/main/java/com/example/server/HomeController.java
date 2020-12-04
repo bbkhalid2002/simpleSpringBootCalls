@@ -16,8 +16,8 @@ public class HomeController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<String> sayHello(@RequestBody medto name) {
-		return new ResponseEntity<String>("Hello " + name.getName(),HttpStatus.OK);
+	public ResponseEntity<medto> sayHello(@RequestBody medto name) {
+		return new ResponseEntity<medto>(name,HttpStatus.OK);
 	}
 }
 
