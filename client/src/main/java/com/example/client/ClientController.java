@@ -2,6 +2,7 @@ package com.example.client;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -18,6 +19,7 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.core.io.FileSystemResource;
@@ -32,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @RestController
 public class ClientController {
 
@@ -43,7 +47,7 @@ public class ClientController {
 
 		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
 
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 
@@ -53,26 +57,34 @@ public class ClientController {
 	}
  
 	@GetMapping
-	public ResponseEntity<?> index() {
+	public ResponseEntity<Object> index() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		medto m = new medto();
 		m.setName("khalid");
 		HttpEntity<medto> reqeust = new HttpEntity<medto>(m, headers);
+		RestTemplate restTemplate = new RestTemplate();
 
 		
 		try {
 			ResponseEntity<medto> responseEntity;
 			responseEntity = restTemplate().postForEntity("https://localhost:8443/server", reqeust, medto.class);
-			return new  ResponseEntity<medto>(responseEntity.getBody(),HttpStatus.OK);
+			System.out.println(" ****** Status("+String.valueOf(responseEntity.getStatusCodeValue())+") ******");
+
+			return new  ResponseEntity<Object>(responseEntity.getBody(),HttpStatus.OK);
 		} catch (Exception e) {
-			return new  ResponseEntity<String>("ERROR " + e.getMessage(),HttpStatus.I_AM_A_TEAPOT);
+			return new  ResponseEntity<Object>("ERROR " + e.getMessage(),HttpStatus.I_AM_A_TEAPOT);
 		}
 
 	}
 }
-
-class medto {
+@JsonInclude
+class medto implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 
 	public String getName() {
