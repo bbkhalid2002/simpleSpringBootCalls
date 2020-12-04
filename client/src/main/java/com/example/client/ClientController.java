@@ -25,6 +25,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class ClientController {
@@ -58,17 +60,19 @@ public class ClientController {
  
 	@GetMapping
 	public ResponseEntity<Object> index() {
+		try {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		medto m = new medto();
 		m.setName("khalid");
-		HttpEntity<medto> reqeust = new HttpEntity<medto>(m, headers);
+		ObjectMapper om = new ObjectMapper();
+		HttpEntity<String> reqeust = new HttpEntity<String>(om.writeValueAsString(m), headers);
 		RestTemplate restTemplate = new RestTemplate();
 
 		
-		try {
-			ResponseEntity<medto> responseEntity;
-			responseEntity = restTemplate().postForEntity("https://localhost:8443/server", reqeust, medto.class);
+		
+			ResponseEntity<String> responseEntity;
+			responseEntity = restTemplate().exchange("https://localhost:8443/server",HttpMethod.POST, reqeust, String.class);
 			System.out.println(" ****** Status("+String.valueOf(responseEntity.getStatusCodeValue())+") ******");
 
 			return new  ResponseEntity<Object>(responseEntity.getBody(),HttpStatus.OK);

@@ -19,7 +19,7 @@ public class HomeController {
 		return "Server working ...";
 	}
 	
-	@PostMapping(consumes = "application/json", produces = "application/json")
+	@PostMapping
 	public ResponseEntity<Object> sayHello(@RequestBody medto name) {
 		System.out.println(" ****** REACHED ******");
 		return new ResponseEntity<Object>(name,HttpStatus.OK);
