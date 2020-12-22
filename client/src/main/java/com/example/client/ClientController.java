@@ -72,7 +72,7 @@ public class ClientController {
 		
 		
 			ResponseEntity<String> responseEntity;
-			responseEntity = restTemplate().exchange("https://localhost:8443/server",HttpMethod.POST, reqeust, String.class);
+			responseEntity = restTemplate().exchange("http://localhost:8082/server",HttpMethod.POST, reqeust, String.class);
 			System.out.println(" ****** Status("+String.valueOf(responseEntity.getStatusCodeValue())+") ******");
 
 			return new  ResponseEntity<Object>(responseEntity.getBody(),HttpStatus.OK);
